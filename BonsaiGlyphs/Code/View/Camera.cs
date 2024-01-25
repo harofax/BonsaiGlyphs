@@ -3,70 +3,74 @@ using SadConsole.Entities;
 
 namespace BonsaiGlyphs.Code.View;
 
-internal class Camera : ScreenObject
+internal class Camera<T> : ScreenObject where T : IScreenSurface
 {
-    private IScreenObject? _target;
+    private IScreenObject? targetEntity;
 
     public IScreenObject? Target
     {
-        get => _target;
+        get => targetEntity;
         set
         {
-            _target = value;
+            targetEntity = value;
             FollowTarget = true;
         }
     }
 
-    private Point _targetPoint;
+    private Point targetPoint;
 
     public Point TargetPoint
     {
-        get => _targetPoint;
+        get => targetPoint;
         set
         {
-            _targetPoint = value;
+            targetPoint = value;
             FollowPoint = true;
         }
     }
 
-    private bool _followTarget;
+    private bool shouldFollowTarget;
 
     public bool FollowTarget
     {
-        get => _followTarget;
+        get => shouldFollowTarget;
         set
         {
-            if (value == true && _followPoint == true)
+            if (value == true && shouldFollowPoint == true)
             {
                 FollowPoint = false;
             }
 
-            _followTarget = value;
+            shouldFollowTarget = value;
         }
     }
 
-    private bool _followPoint;
-    private readonly BonsaiGlyphGame _game;
+    private bool shouldFollowPoint;
+    private readonly T world;
 
     public bool FollowPoint
     {
-        get => _followPoint;
+        get => shouldFollowPoint;
         set
         {
-            if (value == true && _followTarget == true)
+            if (value == true && shouldFollowTarget == true)
             {
                 FollowTarget = false;
             }
 
-            _followPoint = value;
+            shouldFollowPoint = value;
         }
     }
 
-    public Camera(ref BonsaiGlyphGame game, IScreenObject? target, int width, int height)
+    public Camera(ref T world, int width, int height) : this(ref world, width, height, null)
     {
-        _game = game;
-        _targetPoint = game.Surface.View.Center;
-        _target = target;
+    }
+
+    public Camera(ref T world, int width, int height, IScreenObject? targetEntity)
+    {
+        this.world = world;
+        targetPoint = world.Surface.View.Center;
+        this.targetEntity = targetEntity;
     }
 
     public void UpdateCameraPos()
@@ -76,46 +80,47 @@ internal class Camera : ScreenObject
             return;
         }
 
-        _game.Surface.View = _game.Surface.View.WithCenter(Target.Position);
+        world.Surface.View = world.Surface.View.WithCenter(Target.Position);
 
-        _game.Surface.IsDirty = true;
+        world.Surface.IsDirty = true;
     }
 
-    public void SetTargetWithCenter(Point targetPoint)
+    public void SetTargetWithCenter(Point centerPoint)
     {
-        TargetPoint = targetPoint.Translate(-_game.ViewWidth / 2, -_game.ViewHeight / 2);
+        TargetPoint = centerPoint.Translate(-world.Surface.ViewWidth / 2, -world.Surface.ViewHeight / 2);
     }
 
     public override void Update(TimeSpan delta)
     {
         base.Update(delta);
-        
-        if (_followTarget)
+
+        if (shouldFollowTarget)
         {
             switch (Target)
             {
                 case null:
                     return;
                 case Entity ent:
-                    _game.Surface.View = _game.Surface.View.WithCenter(ent.AbsolutePosition);
+                    world.Surface.View = world.Surface.View.WithCenter(ent.AbsolutePosition);
                     break;
                 case IScreenSurface screenSurface:
-                    _game.Surface.View = _game.Surface.View.WithCenter(screenSurface.UsePixelPositioning
-                        ? screenSurface.AbsolutePosition / _game.FontSize
+                    world.Surface.View = world.Surface.View.WithCenter(screenSurface.UsePixelPositioning
+                        ? screenSurface.AbsolutePosition / world.FontSize
                         : screenSurface.AbsolutePosition);
                     break;
                 default:
-                    _game.Surface.View = _game.Surface.View.WithCenter(Target.Position);
+                    world.Surface.View = world.Surface.View.WithCenter(Target.Position);
                     break;
             }
         }
-        else if (_followPoint)
+        else if (shouldFollowPoint)
         {
-            if (_game.UsePixelPositioning)
+            if (world.UsePixelPositioning)
             {
-                _game.Surface.View = _game.Surface.View.WithCenter(TargetPoint / _game.FontSize);
+                world.Surface.View = world.Surface.View.WithCenter(TargetPoint / world.FontSize);
             }
-            _game.Surface.View = _game.Surface.View.WithPosition(TargetPoint);
+
+            world.Surface.View = world.Surface.View.WithPosition(TargetPoint);
         }
     }
 }
