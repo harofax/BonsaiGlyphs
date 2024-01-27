@@ -7,8 +7,6 @@ Settings.WindowTitle = "Bonsai Glyphs";
             
 Builder gameStartup = new Builder()
         .SetScreenSize(GameSettings.VIEW_WIDTH, GameSettings.VIEW_HEIGHT)
-        .SetStartingScreen<RootScreen>()
-        .IsStartingScreenFocused(true)
         .ConfigureFonts(true)
         .OnStart(Init)
     ;
@@ -22,7 +20,7 @@ static void Init(object? sender, GameHost e)
 {
     DebugWindow debug = new DebugWindow(60, GameSettings.WORLD_HEIGHT);
     
-    var mainScreen = new RootScreen();
+    var mainScreen = new Container();
 
     mainScreen.Children.Add(debug);
     
@@ -30,7 +28,7 @@ static void Init(object? sender, GameHost e)
     Game.Instance.Screen.IsFocused = true;
             
     Game.Instance.DestroyDefaultStartingConsole();
-    Settings.ResizeMode = Settings.WindowResizeOptions.None;
-    Game.Instance.MonoGameInstance.WindowResized += mainScreen.OnResize;
+    Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
+    //Game.Instance.MonoGameInstance.WindowResized += mainScreen.OnResize;
 
 }

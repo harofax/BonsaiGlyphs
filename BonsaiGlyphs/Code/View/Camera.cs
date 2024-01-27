@@ -100,9 +100,9 @@ internal class Camera<T> : ScreenObject where T : IScreenSurface
             {
                 case null:
                     return;
-                case Entity ent:
-                    world.Surface.View = world.Surface.View.WithCenter(ent.AbsolutePosition);
-                    break;
+                //case Entity ent:
+                //    world.Surface.View = world.Surface.View.WithCenter(ent.AbsolutePosition);
+                //    break;
                 case IScreenSurface screenSurface:
                     world.Surface.View = world.Surface.View.WithCenter(screenSurface.UsePixelPositioning
                         ? screenSurface.AbsolutePosition / world.FontSize

@@ -4,7 +4,7 @@ namespace BonsaiGlyphs.Code.Tree;
 
 using SadConsole.Readers;
 
-public class BonsaiTree
+public class BonsaiTree : ScreenObject
 {
     private Rectangle debugRect;
 
@@ -18,21 +18,35 @@ public class BonsaiTree
 
     private Random rng;
     
-    public ICellSurface LeafSurface { get; }
-    public ICellSurface BranchSurface { get; }
-    
+    public ScreenSurface LeafSurface { get; }
+    public ScreenSurface BranchSurface { get; }
 
-    public BonsaiTree(int width, int height)
+    public BonsaiTree(int width, int height) : base()
     {
         rng = new Random();
-        LeafSurface = new CellSurface(width, height);
-        BranchSurface = new CellSurface(width, height);
+        LeafSurface = new ScreenSurface(width, height);
+        BranchSurface = new ScreenSurface(width, height);
+        
+        LeafSurface.Clear();
+        BranchSurface.Clear();
 
-        debugRect = new Rectangle(LeafSurface.Area.Center.WithY(height - 6), 2, 4);
+        LeafSurface.IsVisible = true;
+        BranchSurface.IsVisible = true;
+
+        debugRect = new Rectangle(LeafSurface.Surface.Area.Center.WithY(height - 6), 2, 4);
         
         BranchSurface.DrawBox(debugRect, ShapeParameters.CreateFilled(debugBranch, debugBranch));
 
         LeafSurface.IsDirty = true;
+        BranchSurface.IsDirty = true;
+        
+        Children.Add(LeafSurface);
+        Children.Add(BranchSurface);
+    }
+
+    private void LeafSurfaceOnIsDirtyChanged(object? sender, EventArgs e)
+    {
+        System.Console.Out.WriteLine("DIRTY CHANGED LEAF TREE");
     }
 
     public Point RandomizeLeaves()
@@ -72,6 +86,9 @@ public class BonsaiTree
             LeafSurface.DrawLine(debugRect.Center, randRect.Center, '=', debugBranch.Foreground,
                 debugBranch.Background);
         }
+
+        System.Console.Out.WriteLine("LeafSurface.IsDirty = {0}", LeafSurface.IsDirty);
+        System.Console.Out.WriteLine("BranchSurface.IsDirty = {0}", BranchSurface.IsDirty);
         
         debugRect = randRect;
 

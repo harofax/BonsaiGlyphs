@@ -11,16 +11,29 @@ public class BonsaiPot : ScreenSurface
     public ICellSurface DirtSurface { get; }
     public ICellSurface PotSurface { get; }
 
+    private ColoredGlyph debugGlyph = new ColoredGlyph(Color.Red, Color.AnsiYellow);
+
     private BonsaiPot(int width, int height, REXPaintImage potFile, Point startPos) : base(width, height)
     {
         ParsePot(potFile);
         DirtSurface = new CellSurface(width, height);
         PotSurface = Surface;
+        
+        PotSurface.DrawCircle(new Rectangle(startPos, 3, 3), ShapeParameters.CreateFilled(debugGlyph, debugGlyph));
 
         //System.Console.Out.WriteLine("pot created (?) at " + startPos);
 
+        PotSurface.IsDirty = true;
+        PotSurface.IsDirty = true;
+
+        IsDirty = true;
+
+        IsVisible = true;
+
         Position = startPos;
     }
+    
+    
 
     public static BonsaiPot ConstructBonsaiPot(Point startPost)
     {
