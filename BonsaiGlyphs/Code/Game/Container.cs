@@ -17,15 +17,11 @@ internal class Container : ScreenObject
         world = new LayeredScreenSurface(GameSettings.VIEW_WIDTH, GameSettings.VIEW_HEIGHT, GameSettings.WORLD_WIDTH,
             GameSettings.WORLD_HEIGHT);
         
-        
         InitializeSky();
-
-        Entity.SurfaceEntity entity = new Entity.SurfaceEntity(world.Surface);
-
 
         bonsaiTree = new BonsaiTree(20, 20);
         
-        world.Children.Add(bonsaiTree);
+        //world.Children.Add(bonsaiTree);
         
         bonsaiPot = BonsaiPot.ConstructBonsaiPot(world.Surface.Area.Center);
 
@@ -36,13 +32,16 @@ internal class Container : ScreenObject
         world.SadComponents.Add(new MouseInputHandler());
 
         world.IsVisible = true;
+
+
+        bonsaiTree.Position = (5, 5);
         
         Children.Add(world);
         Children.Add(bonsaiPot);
-        //Children.Add(bonsaiTree);
-
+        Children.Add(bonsaiTree);
+        
         Children.MoveToTop(bonsaiPot);
-        //Children.MoveToTop(bonsaiTree);
+        Children.MoveToTop(bonsaiTree);
 
 
         System.Console.Out.WriteLine("bonsaiTree.IsVisible: " + bonsaiTree.IsVisible);
