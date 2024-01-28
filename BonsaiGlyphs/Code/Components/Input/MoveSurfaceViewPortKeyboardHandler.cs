@@ -1,4 +1,5 @@
-﻿using SadConsole.Components;
+﻿using BonsaiGlyphs.Code.Game;
+using SadConsole.Components;
 using SadConsole.Input;
 
 namespace BonsaiGlyphs.Code.Components.Input;
@@ -7,11 +8,16 @@ public class MoveSurfaceViewPortKeyboardHandler : KeyboardConsoleComponent
 {
     private int originalWidth;
     private int originalHeight;
+    private LayeredWorld layeredWorld;
     private int speed = 1;
 
     public override void OnAdded(IScreenObject host)
     {
-        if (host is ScreenSurface surf)
+        if (host is LayeredWorld world)
+        {
+            layeredWorld = world;
+        }
+        else if (host is ScreenSurface surf)
         {
             originalWidth = surf.Width;
             originalHeight = surf.Height;
@@ -28,25 +34,37 @@ public class MoveSurfaceViewPortKeyboardHandler : KeyboardConsoleComponent
         
         
         var surface = (ScreenSurface) host;
+        var world = (LayeredWorld) host;
+        Point newPos = new Point();
+        bool changed = false;
         
         if (keyboard.IsKeyDown(Keys.Left) || keyboard.IsKeyDown(Keys.A))
         {
-            surface.ViewPosition = surface.ViewPosition.Translate((-1 * speed, 0));
+            newPos = surface.ViewPosition.Translate((-1 * speed, 0));
+            changed = true;
         }
 
         if (keyboard.IsKeyDown(Keys.Right) || keyboard.IsKeyDown(Keys.D))
         {
-            surface.ViewPosition = surface.ViewPosition.Translate((1* speed, 0));
+            newPos = surface.ViewPosition.Translate((1* speed, 0));
+            changed = true;
         }
 
         if (keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.W))
         {
-            surface.ViewPosition = surface.ViewPosition.Translate((0, -1* speed));
+            newPos = surface.ViewPosition.Translate((0, -1* speed));
+            changed = true;
         }
 
         if (keyboard.IsKeyDown(Keys.Down) || keyboard.IsKeyDown(Keys.S))
         {
-            surface.ViewPosition = surface.ViewPosition.Translate((0, 1* speed));
+            newPos = surface.ViewPosition.Translate((0, 1* speed));
+            changed = true;
+        }
+
+        if (changed)
+        {
+            world.SetViewPosition(newPos);
         }
 
         handled = true;

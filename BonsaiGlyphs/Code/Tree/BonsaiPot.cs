@@ -1,67 +1,62 @@
-﻿using BonsaiGlyphs.Code.Managers;
+﻿using BonsaiGlyphs.Assets;
+using BonsaiGlyphs.Code.Managers;
 using SadConsole.Readers;
 
 namespace BonsaiGlyphs.Code.Tree;
 
-public class BonsaiPot : ScreenSurface
+public class BonsaiPot
 {
     private const int DIRT_LAYER = 0;
     private const int POT_LAYER = 1;
 
-    public ICellSurface DirtSurface { get; }
-    public ICellSurface PotSurface { get; }
+    public ScreenSurface DirtSurface { get; }
+    public ScreenSurface PotSurface { get; }
+
+    //public ICellSurface CombinedSurface { get; }
 
     private ColoredGlyph debugGlyph = new ColoredGlyph(Color.Red, Color.AnsiYellow);
 
-    private BonsaiPot(int width, int height, REXPaintImage potFile, Point startPos) : base(width, height)
+    public BonsaiPot(ref ScreenSurface potSurface, ref ScreenSurface dirtSurface, REXPaintImage potFile, Point startPos)
     {
-        ParsePot(potFile);
-        DirtSurface = new CellSurface(width, height);
-        PotSurface = Surface;
-        
-        PotSurface.DrawCircle(new Rectangle(startPos, 3, 3), ShapeParameters.CreateFilled(debugGlyph, debugGlyph));
+        DirtSurface = dirtSurface;
+        PotSurface = potSurface;
 
-        //System.Console.Out.WriteLine("pot created (?) at " + startPos);
-
-        PotSurface.IsDirty = true;
-        PotSurface.IsDirty = true;
-
-        IsDirty = true;
-
-        IsVisible = true;
-
-        Position = startPos;
-    }
-    
-    
-
-    public static BonsaiPot ConstructBonsaiPot(Point startPost)
-    {
-        var potFile = AssetManager.LoadRexFile(Assets.Paths.REX_POT);
-        
-        return new BonsaiPot(potFile.Width, potFile.Height, potFile, startPost);
+        ParsePot(potFile, startPos);
     }
 
-    private void ParsePot(REXPaintImage potImage)
+    public static BonsaiPot ConstructBonsaiPot(ref ScreenSurface potLayer, ref ScreenSurface dirtLayer, Point startPos)
+    {
+        var potFile = AssetManager.LoadRexFile(Paths.REX_POT);
+
+        return new BonsaiPot(
+            ref potLayer,
+            ref dirtLayer,
+            potFile,
+            startPos
+                .WithX(startPos.X - potFile.Width / 2)
+                .WithY(startPos.Y - potFile.Height / 2)
+        );
+    }
+
+    private void ParsePot(REXPaintImage potImage, Point startPos)
     {
         var potLayers = potImage.ToCellSurface();
-        
+
         var potCells = potLayers[POT_LAYER];
         var dirtCells = potLayers[DIRT_LAYER];
-        
+
         for (int x = 0; x < potImage.Width; x++)
         {
             for (int y = 0; y < potImage.Height; y++)
             {
-                Surface.SetCellAppearance(x, y, potCells[x,y]);
-                dirtCells.SetCellAppearance(x,y, dirtCells[x,y]);
+                var potCell = potCells[x, y];
+                var dirtCell = dirtCells[x, y];
+
+                PotSurface.SetCellAppearance(startPos.X + x, startPos.Y + y, potCell);
+                DirtSurface.SetCellAppearance(startPos.X + x, startPos.Y + y, dirtCell);
+
+                //CombinedSurface.SetCellAppearance(x, y, potCell.Glyph == 0 ? dirtCell : potCell);
             }
         }
-    }
-
-    public override void Render(TimeSpan delta)
-    {
-        base.Render(delta);
-        
     }
 }

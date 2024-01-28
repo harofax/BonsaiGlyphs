@@ -28,7 +28,7 @@ static void Init(object? sender, GameHost e)
     Game.Instance.Screen.IsFocused = true;
             
     Game.Instance.DestroyDefaultStartingConsole();
-    Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
+    Settings.ResizeMode = Settings.WindowResizeOptions.Center;
     //Game.Instance.MonoGameInstance.WindowResized += mainScreen.OnResize;
 
 }

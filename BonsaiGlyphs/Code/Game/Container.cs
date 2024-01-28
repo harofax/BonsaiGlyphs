@@ -1,4 +1,7 @@
-﻿using BonsaiGlyphs.Code.Components.Input;
+﻿using BonsaiGlyphs.Assets;
+using BonsaiGlyphs.Code.Components;
+using BonsaiGlyphs.Code.Components.Input;
+using BonsaiGlyphs.Code.Managers;
 using BonsaiGlyphs.Code.Tree;
 using SadConsole.Entities;
 using SadConsole.Input;
@@ -9,45 +12,41 @@ internal class Container : ScreenObject
 {
     private BonsaiTree bonsaiTree;
     private BonsaiPot bonsaiPot;
-    
-    private LayeredScreenSurface world;
+
+    private LayeredWorld world;
 
     public Container()
     {
-        world = new LayeredScreenSurface(GameSettings.VIEW_WIDTH, GameSettings.VIEW_HEIGHT, GameSettings.WORLD_WIDTH,
+        world = new LayeredWorld(GameSettings.VIEW_WIDTH, GameSettings.VIEW_HEIGHT, GameSettings.WORLD_WIDTH,
             GameSettings.WORLD_HEIGHT);
+
+        AddSky(world.GetLayerSurface(LayeredWorld.WorldLayer.Background));
         
-        InitializeSky();
-
-        bonsaiTree = new BonsaiTree(20, 20);
+        var potLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.Pot);
+        var dirtLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.Dirt);
         
-        //world.Children.Add(bonsaiTree);
+        var potFile = AssetManager.LoadRexFile(Paths.REX_POT);
+
+        Point potDimensions = new Point(potFile.Width, potFile.Height);
+
+        Point potStart = world.Area.Center.WithY(world.Area.Height - potDimensions.Y).Translate(-potDimensions.X/2, 0);
         
-        bonsaiPot = BonsaiPot.ConstructBonsaiPot(world.Surface.Area.Center);
-
-        //world.Layers.Add(bonsaiTree.BranchSurface);
-        //world.Layers.Add(bonsaiTree.LeafSurface);
-
-        world.SadComponents.Add(new MoveSurfaceViewPortKeyboardHandler());
-        world.SadComponents.Add(new MouseInputHandler());
-
-        world.IsVisible = true;
-
-
-        bonsaiTree.Position = (5, 5);
+        bonsaiPot = new BonsaiPot(ref potLayer, ref dirtLayer, potFile, potStart);
         
+        
+        var treeBranchLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.TreeBackground);
+        var treeLeafLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.TreeForeground);
+
+        bonsaiTree = new BonsaiTree(ref treeLeafLayer, ref treeBranchLayer, potStart.Translate(potDimensions.X/2, 0));
+        
+        var fg = world.GetLayerSurface(LayeredWorld.WorldLayer.Foreground);
+        var middleRect = new Rectangle(world.Area.Center, 6, 3);
+        fg.DrawCircle(middleRect, ShapeParameters.CreateBorder(new ColoredGlyph(Color.Red, Color.Blue, 'X')));
+
         Children.Add(world);
-        Children.Add(bonsaiPot);
-        Children.Add(bonsaiTree);
-        
-        Children.MoveToTop(bonsaiPot);
-        Children.MoveToTop(bonsaiTree);
-
-
-        System.Console.Out.WriteLine("bonsaiTree.IsVisible: " + bonsaiTree.IsVisible);
     }
 
-    private void InitializeSky()
+    private void AddSky(ScreenSurface screen)
     {
         Color[] colors = new[]
         {
@@ -59,21 +58,27 @@ internal class Container : ScreenObject
             Color.Goldenrod,
         };
         float[] colorStops = new[] {0f, 0.3f, 0.5f, 0.7f, 0.85f, 1f};
-        Algorithms.GradientFill(world.FontSize,
-            world.Surface.Area.Center,
-            world.Surface.Height,
+        Algorithms.GradientFill(screen.FontSize,
+            screen.Surface.Area.Center,
+            screen.Height,
             0,
-            world.Surface.Area,
+            screen.Surface.Area,
             new Gradient(colors, colorStops),
-            (x, y, color) => world.Surface[x, y].Background = color);
+            (x, y, color) => screen.Surface[x, y].Background = color);
     }
 
 
     private Queue<Point> viewPath = new Queue<Point>();
 
+    public void StopFollow()
+    {
+        viewPath.Clear();
+    }
+
     public override bool ProcessKeyboard(Keyboard keyboard)
     {
-        world.ProcessKeyboard(keyboard);
+        
+
 
         bool newLeaf = false;
         Point randPos = default;
@@ -87,20 +92,27 @@ internal class Container : ScreenObject
 
         if (keyboard.IsKeyPressed(Keys.Space))
         {
-            System.Console.Out.WriteLine("---- POT ---");
-            System.Console.Out.WriteLine("pos: " + bonsaiPot.Position);
-            System.Console.Out.WriteLine("visible: " + bonsaiPot.IsVisible);
-            System.Console.Out.WriteLine("------------");
+            System.Console.Out.WriteLine("viewpath count " + viewPath.Count);
+            //System.Console.Out.WriteLine("---- POT ---");
+            //System.Console.Out.WriteLine("pos: " );
+            //System.Console.Out.WriteLine("visible: " + bonsaiPot.IsVisible);
+            //System.Console.Out.WriteLine("------------");
         }
 
         if (newLeaf)
         {
-            var desired = randPos - new Point(world.ViewWidth / 2, world.ViewHeight / 2);
-            if (Math.Abs(world.ViewPosition.Y - desired.Y) > 11)
+            var desired = randPos - new Point(world.Surface.ViewWidth / 2, world.Surface.ViewHeight / 2);
+            if (Math.Abs(world.View.Y - desired.Y) > 11)
             {
+                if (viewPath.Count > 5)
+                {
+                    viewPath.Dequeue();
+                }
                 viewPath.Enqueue(desired);
             }
         }
+
+        world.ProcessKeyboard(keyboard);
 
 
         return true;
@@ -120,7 +132,7 @@ internal class Container : ScreenObject
         {
             fraction += (float) delta.TotalSeconds * 0.4f;
 
-            Point cur = world.ViewPosition;
+            Point cur = world.View.Position;
             Point desired = viewPath.Peek();
 
             Point lerpPoint = new Point(
@@ -128,21 +140,25 @@ internal class Container : ScreenObject
                 (int) lerp(cur.Y, desired.Y, fraction)
             );
 
-            var yDiff = (float) world.ViewPosition.Y - ((float) desired.Y);
+            var yDiff = (float) world.View.Y - ((float) desired.Y);
 
             //System.Console.Out.WriteLine("view pos: " + world.ViewPosition);
             //System.Console.Out.WriteLine("desir pos: " + desired);
             //
             //System.Console.Out.WriteLine("Y diff: " + yDiff);
 
+            //if (world.Area.WithSize(world.Area.Width - world.View.Width, world.Area.Height - world.View.Height).Contains(lerpPoint))
+            //{
+            //    world.SetViewPosition(lerpPoint);
+            //}
+            
             if (Math.Abs(yDiff) < 2)
             {
                 viewPath.Dequeue();
                 fraction = 0;
             }
-
-
-            world.ViewPosition = lerpPoint;
+            
+            world.SetViewPosition(lerpPoint);
         }
         else
         {
@@ -158,9 +174,9 @@ internal class Container : ScreenObject
 
     public void FitToWindow()
     {
-        world.Surface.View = world.Surface.View.WithSize(
-            SadConsole.Game.Instance.MonoGameInstance.WindowWidth / world.FontSize.X,
-            SadConsole.Game.Instance.MonoGameInstance.WindowHeight / world.FontSize.Y);
+        world.Surface.Surface.View = world.Surface.Surface.View.WithSize(
+            SadConsole.Game.Instance.MonoGameInstance.WindowWidth / world.Surface.FontSize.X,
+            SadConsole.Game.Instance.MonoGameInstance.WindowHeight / world.Surface.FontSize.Y);
 
         int windowWidth = SadConsole.Game.Instance.MonoGameInstance.WindowWidth;
         int windowHeight = SadConsole.Game.Instance.MonoGameInstance.WindowHeight;
@@ -174,7 +190,8 @@ internal class Container : ScreenObject
         //System.Console.Out.WriteLine("world pixelheight: " + world.HeightPixels);
         //System.Console.Out.WriteLine("-------------------------");
 
-        world.Position = new Point((windowWidth - world.WidthPixels) / 2, (windowHeight - world.HeightPixels) / 2);
+        world.Position = new Point((windowWidth - world.Surface.WidthPixels) / 2,
+            (windowHeight - world.Surface.HeightPixels) / 2);
 
         //System.Console.Out.WriteLine("post-resize pos: " + world.Position);
 
