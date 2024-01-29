@@ -53,7 +53,7 @@ public class BonsaiTree
     private int pityX = 0;
     private int pityY = 0;
 
-    public Point RandomizeLeaves()
+    public Point DebugGrow()
     {
         var randLeaf = new ColoredGlyph(debugLeaf.Foreground, debugLeaf.Background, rng.Next(1, 255));
 

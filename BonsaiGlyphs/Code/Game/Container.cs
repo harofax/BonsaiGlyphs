@@ -85,7 +85,7 @@ internal class Container : ScreenObject
 
         if (keyboard.IsKeyPressed(Keys.F))
         {
-            randPos = bonsaiTree.RandomizeLeaves();
+            randPos = bonsaiTree.DebugGrow();
             //world.IsDirty = true;
             newLeaf = true;
         }
