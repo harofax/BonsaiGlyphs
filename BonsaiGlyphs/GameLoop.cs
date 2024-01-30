@@ -32,7 +32,7 @@ internal static class GameLoop
         Game.Instance.Screen.IsFocused = true;
 
         Game.Instance.DestroyDefaultStartingConsole();
-        Settings.ResizeMode = Settings.WindowResizeOptions.None;
-        Game.Instance.MonoGameInstance.WindowResized += mainScreen.OnResize;
+        Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
+        //Game.Instance.MonoGameInstance.WindowResized += mainScreen.OnResize;
     }
 }

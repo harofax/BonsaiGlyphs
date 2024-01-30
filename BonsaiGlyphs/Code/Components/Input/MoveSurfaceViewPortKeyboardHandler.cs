@@ -64,7 +64,7 @@ public class MoveSurfaceViewPortKeyboardHandler : KeyboardConsoleComponent
 
         if (changed)
         {
-            world.SetViewPosition(newPos);
+            world.SetLayersViewPositions(newPos);
         }
 
         handled = true;

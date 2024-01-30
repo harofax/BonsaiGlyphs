@@ -24,26 +24,32 @@ internal class Container : ScreenObject
         
         var potLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.Pot);
         var dirtLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.Dirt);
+
+        world.UsePixelPositioning = true;
         
         var potFile = AssetManager.LoadRexFile(Paths.REX_POT);
 
         Point potDimensions = new Point(potFile.Width, potFile.Height);
 
-        Point potStart = world.Area.Center.WithY(world.Area.Height - potDimensions.Y).Translate(-potDimensions.X/2, 0);
+        Point potStart = world.Surface.Area.Center.WithY(world.Surface.Area.Height - potDimensions.Y).Translate(-potDimensions.X/2, 0);
         
         bonsaiPot = new BonsaiPot(ref potLayer, ref dirtLayer, potFile, potStart);
         
         
         var treeBranchLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.TreeBackground);
         var treeLeafLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.TreeForeground);
-
+        
         bonsaiTree = new BonsaiTree(ref treeLeafLayer, ref treeBranchLayer, potStart.Translate(potDimensions.X/2, 0));
         
         var fg = world.GetLayerSurface(LayeredWorld.WorldLayer.Foreground);
-        var middleRect = new Rectangle(world.Area.Center, 6, 3);
+        var middleRect = new Rectangle(world.Surface.Area.Center, 6, 3);
         fg.DrawCircle(middleRect, ShapeParameters.CreateBorder(new ColoredGlyph(Color.Red, Color.Blue, 'X')));
 
         Children.Add(world);
+        world.IsFocused = true;
+        UseMouse = false;
+
+        world.ViewPosition = world.Surface.View.WithCenter(potStart).Position.Translate(potDimensions.X/2, 0);
     }
 
     private void AddSky(ScreenSurface screen)
@@ -102,7 +108,7 @@ internal class Container : ScreenObject
         if (newLeaf)
         {
             var desired = randPos - new Point(world.Surface.ViewWidth / 2, world.Surface.ViewHeight / 2);
-            if (Math.Abs(world.View.Y - desired.Y) > 11)
+            if (Math.Abs(world.Surface.View.Y - desired.Y) > 11)
             {
                 if (viewPath.Count > 5)
                 {
@@ -132,7 +138,7 @@ internal class Container : ScreenObject
         {
             fraction += (float) delta.TotalSeconds * 0.4f;
 
-            Point cur = world.View.Position;
+            Point cur = world.Surface.View.Position;
             Point desired = viewPath.Peek();
 
             Point lerpPoint = new Point(
@@ -140,7 +146,7 @@ internal class Container : ScreenObject
                 (int) lerp(cur.Y, desired.Y, fraction)
             );
 
-            var yDiff = (float) world.View.Y - ((float) desired.Y);
+            var yDiff = (float) world.Surface.View.Y - ((float) desired.Y);
 
             //System.Console.Out.WriteLine("view pos: " + world.ViewPosition);
             //System.Console.Out.WriteLine("desir pos: " + desired);
@@ -157,8 +163,8 @@ internal class Container : ScreenObject
                 viewPath.Dequeue();
                 fraction = 0;
             }
-            
-            world.SetViewPosition(lerpPoint);
+
+            world.ViewPosition = lerpPoint;
         }
         else
         {
@@ -174,9 +180,12 @@ internal class Container : ScreenObject
 
     public void FitToWindow()
     {
-        world.Surface.Surface.View = world.Surface.Surface.View.WithSize(
-            SadConsole.Game.Instance.MonoGameInstance.WindowWidth / world.Surface.FontSize.X,
-            SadConsole.Game.Instance.MonoGameInstance.WindowHeight / world.Surface.FontSize.Y);
+        var fittingView =world.Surface.View.WithSize(
+            SadConsole.Game.Instance.MonoGameInstance.WindowWidth / world.FontSize.X,
+            SadConsole.Game.Instance.MonoGameInstance.WindowHeight / world.FontSize.Y);
+
+        world.Surface.View = fittingView;
+        world.SetLayersView(fittingView);
 
         int windowWidth = SadConsole.Game.Instance.MonoGameInstance.WindowWidth;
         int windowHeight = SadConsole.Game.Instance.MonoGameInstance.WindowHeight;
@@ -190,8 +199,13 @@ internal class Container : ScreenObject
         //System.Console.Out.WriteLine("world pixelheight: " + world.HeightPixels);
         //System.Console.Out.WriteLine("-------------------------");
 
-        world.Position = new Point((windowWidth - world.Surface.WidthPixels) / 2,
-            (windowHeight - world.Surface.HeightPixels) / 2);
+        var centeredPosition = new Point((windowWidth - world.WidthPixels) / 2,
+            (windowHeight - world.HeightPixels) / 2);
+        //world.Position = newPosition;
+
+        world.Position = centeredPosition;
+        
+        //world.SetLayerPositions(newPosition);
 
         //System.Console.Out.WriteLine("post-resize pos: " + world.Position);
 

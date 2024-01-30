@@ -1,10 +1,11 @@
 ﻿using BonsaiGlyphs.Code.Components;
+using BonsaiGlyphs.Code.Util;
 using SadConsole.Entities;
 using SadConsole.Input;
 
 namespace BonsaiGlyphs.Code.Game;
 
-public class LayeredWorld : ScreenObject
+public class LayeredWorld : ScreenSurface
 {
     public enum WorldLayer
     {
@@ -18,59 +19,96 @@ public class LayeredWorld : ScreenObject
         Foreground,
     }
 
-    public ScreenSurface Surface { get; private set; }
+    //public ScreenSurface Surface { get; private set; }
 
     private Dictionary<WorldLayer, ScreenSurface> worldMap;
     private Dictionary<WorldLayer, EntityManager> entityManagerMap;
 
-    
-    public Rectangle View { get; private set; }
-    public Rectangle Area { get; private set; }
-    
-    public WorldComponent World;
 
-    private int _numLayers;
+    public WorldViewPortMovementHandler WorldViewPortMovement;
+
+    public int NumLayers { get; }
 
     public LayeredWorld(int viewWidth, int viewHeight, int worldWidth, int worldHeight)
-        //: base(viewWidth, viewHeight, worldWidth, worldHeight)
+        : base(viewWidth, viewHeight, worldWidth, worldHeight)
     {
         var worldLayers = Enum.GetValues(typeof(WorldLayer)).Cast<WorldLayer>().ToArray();
-        Surface = new ScreenSurface(viewWidth, viewHeight, worldWidth, worldHeight);
+        //Surface = new ScreenSurface(viewWidth, viewHeight, worldWidth, worldHeight);
 
-        Area = new Rectangle(0, 0, worldWidth, worldHeight);
+        Surface.IsDirtyChanged += SurfaceOnIsDirtyChanged;
 
-        View = new Rectangle(0,0,viewWidth, viewHeight);
+        Surface.Fill(Color.Red, Color.Blue, '?');
 
         worldMap = new Dictionary<WorldLayer, ScreenSurface>(worldLayers.Length);
         entityManagerMap = new Dictionary<WorldLayer, EntityManager>(worldLayers.Length);
 
-        _numLayers = worldLayers.Length;
+        NumLayers = worldLayers.Length;
 
         foreach (var worldLayer in worldLayers)
         {
             ScreenSurface worldLayerSurface = new ScreenSurface(viewWidth, viewHeight, worldWidth, worldHeight);
             EntityManager manager = new EntityManager();
-            
+
+            worldLayerSurface.UsePixelPositioning = true;
+
             worldLayerSurface.SadComponents.Add(manager);
-            
+
             worldMap[worldLayer] = worldLayerSurface;
             entityManagerMap[worldLayer] = manager;
-            
+
+            worldLayerSurface.FocusOnMouseClick = false;
+            worldLayerSurface.IsFocused = false;
+
+            worldLayerSurface.UseMouse = false;
+
             Children.Add(worldLayerSurface);
         }
 
-        World = new WorldComponent();
+        IsExclusiveMouse = true;
 
-        SadComponents.Add(World);
+        WorldViewPortMovement = new WorldViewPortMovementHandler();
+
+        SadComponents.Add(WorldViewPortMovement);
 
         IsFocused = true;
+        UseMouse = true;
+    }
+
+    protected override void OnMouseEnter(MouseScreenObjectState state)
+    {
+        base.OnMouseEnter(state);
+    }
+
+    protected override void OnMouseExit(MouseScreenObjectState state)
+    {
+        base.OnMouseExit(state);
+    }
+
+    protected override void OnMouseMove(MouseScreenObjectState state)
+    {
+        base.OnMouseMove(state);
+    }
+
+    protected override void OnMouseLeftClicked(MouseScreenObjectState state)
+    {
+        base.OnMouseLeftClicked(state);
+    }
+
+    private void SurfaceOnIsDirtyChanged(object? sender, EventArgs e)
+    {
+        SetLayersViewPositions(ViewPosition);
     }
 
     public override bool ProcessKeyboard(Keyboard keyboard)
     {
-        World.ProcessKeyboard(this, keyboard, out var handled);
+        WorldViewPortMovement.ProcessKeyboard(this, keyboard, out var handled);
 
         return handled;
+    }
+
+    public override bool ProcessMouse(MouseScreenObjectState state)
+    {
+        return base.ProcessMouse(state);
     }
 
     public void AddEntityToLayer(WorldLayer layer, Entity entity)
@@ -93,13 +131,61 @@ public class LayeredWorld : ScreenObject
         return worldMap.Values.ToArray();
     }
 
-    public void SetViewPosition(Point newViewPosition)
+    public void SetLayersToDirty(bool isDirty)
     {
-        View = View.WithPosition(newViewPosition);
-        for (int i = 0; i < _numLayers; i++)
+        for (int i = 0; i < NumLayers; i++)
+        {
+            worldMap[(WorldLayer) i].IsDirty = isDirty;
+        }
+    }
+
+    public void SetLayersViewPositions(Point newViewPosition)
+    {
+        for (int i = 0; i < NumLayers; i++)
         {
             worldMap[(WorldLayer) i].ViewPosition = newViewPosition;
         }
+    }
+
+    public void SetLayersView(Rectangle newView)
+    {
+        Surface.View = newView;
+        for (int i = 0; i < NumLayers; i++)
+        {
+            worldMap[(WorldLayer) i].Surface.View = newView;
+        }
+    }
+
+    public void SetLayerPositions(Point position)
+    {
+        for (int i = 0; i < NumLayers; i++)
+        {
+            worldMap[(WorldLayer) i].Position = position;
+        }
+    }
+    
+
+    public bool CastRayAt(Point rayPos, bool skipBG, out RayHitResult hitResult)
+    {
+        int offset = skipBG ? 1 : 0;
+        for (int i = NumLayers - 1; i >= offset; i--)
+        {
+            ScreenSurface layer = worldMap[(WorldLayer) i];
+
+            var cell = layer.Surface[rayPos.X, rayPos.Y];
+            bool empty = cell.Background == Color.Transparent && cell.Background == Color.Transparent;
+
+            if (!empty)
+            {
+                System.Console.Out.WriteLine("HIT A CELL");
+                hitResult = new RayHitResult(true, cell, rayPos);
+                return true;
+            }
+            
+        }
+
+        hitResult = default;
+        return false;
     }
 
     public ScreenSurface GetLayerSurface(WorldLayer layer)

@@ -1,4 +1,5 @@
 ﻿using BonsaiGlyphs.Code.Managers;
+using SadConsole.Components;
 
 namespace BonsaiGlyphs.Code.Tree;
 
@@ -20,6 +21,9 @@ public class BonsaiTree
 
     private Random rng;
 
+    
+    
+    
     public ScreenSurface LeafSurface { get; }
     public ScreenSurface BranchSurface { get; }
 
@@ -35,6 +39,9 @@ public class BonsaiTree
         LeafSurface.IsVisible = true;
         BranchSurface.IsVisible = true;
 
+        
+        leafSurface.SadComponents.Add(new MouseTint());
+        
         debugRect = new Rectangle(startPos, 2, 4);
 
         BranchSurface.DrawBox(debugRect, ShapeParameters.CreateFilled(debugBranch, debugBranch));
@@ -53,8 +60,39 @@ public class BonsaiTree
     private int pityX = 0;
     private int pityY = 0;
 
+    private int sproutStage = 0;
+    private int sproutCycles = 5;
+
     public Point DebugGrow()
     {
+        if (sproutStage < sproutCycles)
+        {
+            var startX = rng.Next(debugRect.Center.X - 5, debugRect.Center.X + 5 );
+            var startY = rng.Next(debugRect.Center.Y - 6, debugRect.Center.Y - 3 );
+
+            var sproutPos = new Point(startX, startY);
+            var sproutSize = new Point(rng.Next(2, 5),
+                rng.Next(1, 3));
+            var sproutRect = new Rectangle(sproutPos, sproutSize.X, sproutSize.Y);
+
+            
+            BranchSurface.DrawLine(debugRect.Center, sproutRect.Center, debugBranch.Glyph,
+                debugBranch.Foreground, debugBranch.Background);
+        
+            var randSproutWidth = rng.Next(sproutCycles - sproutStage, 6 - sproutStage );
+            for (int i = 1; i < randSproutWidth; i++)
+            {
+                BranchSurface.DrawLine(debugRect.Center.Translate(i,0), sproutRect.Center.Translate(i,0), debugBranch.Glyph, debugBranch.Foreground,
+                    debugBranch.Background);
+            }
+
+
+            debugRect = sproutRect;
+            sproutStage++;
+            return sproutPos;
+        }
+        
+        
         var randLeaf = new ColoredGlyph(debugLeaf.Foreground, debugLeaf.Background, rng.Next(1, 255));
 
         remake:
