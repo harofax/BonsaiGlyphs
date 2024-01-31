@@ -38,9 +38,6 @@ public class BonsaiTree
 
         LeafSurface.IsVisible = true;
         BranchSurface.IsVisible = true;
-
-        
-        leafSurface.SadComponents.Add(new MouseTint());
         
         debugRect = new Rectangle(startPos, 2, 4);
 

@@ -19,8 +19,6 @@ internal class Container : ScreenObject
     {
         world = new LayeredWorld(GameSettings.VIEW_WIDTH, GameSettings.VIEW_HEIGHT, GameSettings.WORLD_WIDTH,
             GameSettings.WORLD_HEIGHT);
-
-        AddSky(world.GetLayerSurface(LayeredWorld.WorldLayer.Background));
         
         var potLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.Pot);
         var dirtLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.Dirt);
@@ -49,29 +47,10 @@ internal class Container : ScreenObject
         world.IsFocused = true;
         UseMouse = false;
 
-        world.ViewPosition = world.Surface.View.WithCenter(potStart).Position.Translate(potDimensions.X/2, 0);
+        //world.Viewport.CameraPosition = world.Surface.View.WithCenter(potStart).Position.Translate(potDimensions.X/2, 0).ToMonoPoint().ToVector2();
     }
 
-    private void AddSky(ScreenSurface screen)
-    {
-        Color[] colors = new[]
-        {
-            Color.Black,
-            Color.DarkBlue,
-            Color.CornflowerBlue,
-            Color.Purple,
-            Color.OrangeRed,
-            Color.Goldenrod,
-        };
-        float[] colorStops = new[] {0f, 0.3f, 0.5f, 0.7f, 0.85f, 1f};
-        Algorithms.GradientFill(screen.FontSize,
-            screen.Surface.Area.Center,
-            screen.Height,
-            0,
-            screen.Surface.Area,
-            new Gradient(colors, colorStops),
-            (x, y, color) => screen.Surface[x, y].Background = color);
-    }
+    
 
 
     private Queue<Point> viewPath = new Queue<Point>();
@@ -83,9 +62,6 @@ internal class Container : ScreenObject
 
     public override bool ProcessKeyboard(Keyboard keyboard)
     {
-        
-
-
         bool newLeaf = false;
         Point randPos = default;
 
@@ -98,7 +74,10 @@ internal class Container : ScreenObject
 
         if (keyboard.IsKeyPressed(Keys.Space))
         {
-            System.Console.Out.WriteLine("viewpath count " + viewPath.Count);
+            System.Console.Out.WriteLine("world.viewpos " + world.ViewPosition);
+            System.Console.Out.WriteLine("world.surface.viewpos" + world.Surface.ViewPosition);
+            System.Console.Out.WriteLine("world.surface.view.pos" + world.Surface.View.Position);
+            //System.Console.Out.WriteLine("viewpath count " + viewPath.Count);
             //System.Console.Out.WriteLine("---- POT ---");
             //System.Console.Out.WriteLine("pos: " );
             //System.Console.Out.WriteLine("visible: " + bonsaiPot.IsVisible);

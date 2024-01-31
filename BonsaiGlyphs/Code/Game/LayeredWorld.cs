@@ -24,8 +24,9 @@ public class LayeredWorld : ScreenSurface
     private Dictionary<WorldLayer, ScreenSurface> worldMap;
     private Dictionary<WorldLayer, EntityManager> entityManagerMap;
 
+    private Random rng;
 
-    public WorldViewPortMovementHandler WorldViewPortMovement;
+    public WorldViewPortMovementHandler Viewport;
 
     public int NumLayers { get; }
 
@@ -41,6 +42,8 @@ public class LayeredWorld : ScreenSurface
 
         worldMap = new Dictionary<WorldLayer, ScreenSurface>(worldLayers.Length);
         entityManagerMap = new Dictionary<WorldLayer, EntityManager>(worldLayers.Length);
+
+        rng = new Random(Guid.NewGuid().GetHashCode());
 
         NumLayers = worldLayers.Length;
 
@@ -64,35 +67,75 @@ public class LayeredWorld : ScreenSurface
             Children.Add(worldLayerSurface);
         }
 
+        var BG = worldMap[WorldLayer.Background];
+
+        AddSky(BG);
+        AddStars(worldMap[WorldLayer.Bottom]);
+
         IsExclusiveMouse = true;
 
-        WorldViewPortMovement = new WorldViewPortMovementHandler();
+        Viewport = new WorldViewPortMovementHandler();
 
-        SadComponents.Add(WorldViewPortMovement);
+        SadComponents.Add(Viewport);
 
         IsFocused = true;
         UseMouse = true;
     }
 
-    protected override void OnMouseEnter(MouseScreenObjectState state)
+    private void AddStars(ScreenSurface surface)
     {
-        base.OnMouseEnter(state);
+        int[] glyphs = new[] {'+', 46, 250, 96, 248, 249};
+
+        int glyph = 0;
+
+        for (int x = 0; x < surface.Width; x++)
+        {
+            for (int y = 0; y < 190; y++)
+            {
+                if (rng.Next(130 + (y + 1) * 10) < 5)
+                {
+                    if (rng.Next(200) < 10 && y < 80)
+                    {
+                        glyph = 197;
+                    }
+                    else
+                    {
+                        glyph = glyphs[rng.Next(0, glyphs.Length)];
+                    }
+                }
+                else
+                {
+                    glyph = 0;
+                }
+
+
+                surface.Surface.SetCellAppearance(x, y,
+                    new ColoredGlyph(Color.LightGoldenrodYellow, Color.Transparent, glyph));
+            }
+        }
     }
 
-    protected override void OnMouseExit(MouseScreenObjectState state)
+    private void AddSky(ScreenSurface screen)
     {
-        base.OnMouseExit(state);
+        Color[] colors = new[]
+        {
+            Color.Black,
+            Color.DarkBlue,
+            Color.CornflowerBlue,
+            Color.Purple,
+            Color.OrangeRed,
+            Color.Goldenrod,
+        };
+        float[] colorStops = new[] {0f, 0.3f, 0.5f, 0.85f, 0.90f, 1f};
+        Algorithms.GradientFill(screen.FontSize,
+            screen.Surface.Area.Center,
+            screen.Height,
+            0,
+            screen.Surface.Area,
+            new Gradient(colors, colorStops),
+            (x, y, color) => screen.Surface[x, y].Background = color);
     }
 
-    protected override void OnMouseMove(MouseScreenObjectState state)
-    {
-        base.OnMouseMove(state);
-    }
-
-    protected override void OnMouseLeftClicked(MouseScreenObjectState state)
-    {
-        base.OnMouseLeftClicked(state);
-    }
 
     private void SurfaceOnIsDirtyChanged(object? sender, EventArgs e)
     {
@@ -101,14 +144,9 @@ public class LayeredWorld : ScreenSurface
 
     public override bool ProcessKeyboard(Keyboard keyboard)
     {
-        WorldViewPortMovement.ProcessKeyboard(this, keyboard, out var handled);
+        Viewport.ProcessKeyboard(this, keyboard, out var handled);
 
         return handled;
-    }
-
-    public override bool ProcessMouse(MouseScreenObjectState state)
-    {
-        return base.ProcessMouse(state);
     }
 
     public void AddEntityToLayer(WorldLayer layer, Entity entity)
@@ -163,7 +201,7 @@ public class LayeredWorld : ScreenSurface
             worldMap[(WorldLayer) i].Position = position;
         }
     }
-    
+
 
     public bool CastRayAt(Point rayPos, bool skipBG, out RayHitResult hitResult)
     {
@@ -181,7 +219,6 @@ public class LayeredWorld : ScreenSurface
                 hitResult = new RayHitResult(true, cell, rayPos);
                 return true;
             }
-            
         }
 
         hitResult = default;
