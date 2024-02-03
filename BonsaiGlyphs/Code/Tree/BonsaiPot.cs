@@ -26,7 +26,7 @@ public class BonsaiPot
 
     public static BonsaiPot ConstructBonsaiPot(ref ScreenSurface potLayer, ref ScreenSurface dirtLayer, Point startPos)
     {
-        var potFile = AssetManager.LoadRexFile(Paths.REX_POT);
+        var potFile = AssetManager.LoadRexFile(Paths.POT_PATH);
 
         return new BonsaiPot(
             ref potLayer,

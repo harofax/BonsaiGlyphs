@@ -73,6 +73,8 @@ public class LayeredWorld : ScreenSurface
         AddStars(worldMap[WorldLayer.Bottom]);
 
         IsExclusiveMouse = true;
+        
+        GameLoop.TickManager.TickTimer.TimerElapsed += TickTimerOnTimerElapsed;
 
         Viewport = new WorldViewPortMovementHandler();
 
@@ -82,9 +84,15 @@ public class LayeredWorld : ScreenSurface
         UseMouse = true;
     }
 
+    private void TickTimerOnTimerElapsed(object? sender, EventArgs e)
+    {
+        System.Console.Out.WriteLine("TICK TOCK");
+    }
+
     private void AddStars(ScreenSurface surface)
     {
-        int[] glyphs = new[] {'+', 46, 250, 96, 248, 249};
+        //                         .    ·   `    °    ∙
+        int[] glyphs = new[] {'+', 46, 250, 96, 248, 249}; 
 
         int glyph = 0;
 
@@ -94,9 +102,10 @@ public class LayeredWorld : ScreenSurface
             {
                 if (rng.Next(130 + (y + 1) * 10) < 5)
                 {
-                    if (rng.Next(200) < 10 && y < 80)
+                    if (rng.Next(250) < 5 && y < 30)
                     {
-                        glyph = 197;
+                        //       ┼
+                        glyph = 197; 
                     }
                     else
                     {

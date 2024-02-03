@@ -14,6 +14,7 @@ internal class Container : ScreenObject
     private BonsaiPot bonsaiPot;
 
     private LayeredWorld world;
+    private CritterManager critterManager;
 
     public Container()
     {
@@ -24,8 +25,10 @@ internal class Container : ScreenObject
         var dirtLayer = world.GetLayerSurface(LayeredWorld.WorldLayer.Dirt);
 
         world.UsePixelPositioning = true;
+
+        critterManager = new CritterManager(world);
         
-        var potFile = AssetManager.LoadRexFile(Paths.REX_POT);
+        var potFile = AssetManager.LoadRexFile(Paths.POT_PATH);
 
         Point potDimensions = new Point(potFile.Width, potFile.Height);
 
@@ -41,7 +44,8 @@ internal class Container : ScreenObject
         
         var fg = world.GetLayerSurface(LayeredWorld.WorldLayer.Foreground);
         var middleRect = new Rectangle(world.Surface.Area.Center, 6, 3);
-        fg.DrawCircle(middleRect, ShapeParameters.CreateBorder(new ColoredGlyph(Color.Red, Color.Blue, 'X')));
+        // ------------------ DRAW SOMETHING HERE -----------------------------------------------------------
+        // ------------------------------------- LIKE A CLOUD OR SOMETHING ----------------------------------
 
         Children.Add(world);
         world.IsFocused = true;

@@ -1,0 +1,39 @@
+﻿{
+  "$type": "BonsaiGlyphs.Code.Entities.Critters.CritterModel[], BonsaiGame",
+  "$values": [
+    {
+      "$type": "BonsaiGlyphs.Code.Entities.Critters.CritterModel, BonsaiGame",
+      "Name": "butterfly",
+      "Frames": {
+        "$type": "System.String[], System.Private.CoreLib",
+        "$values": [
+          "}i{",
+          " i ",
+          "{i}"
+        ]
+      },
+      "Size": {
+        "$type": "SadRogue.Primitives.Point, TheSadRogue.Primitives",
+        "X": 3,
+        "Y": 1
+      }
+    },
+    {
+      "$type": "BonsaiGlyphs.Code.Entities.Critters.CritterModel, BonsaiGame",
+      "Name": "fly",
+      "Frames": {
+        "$type": "System.String[], System.Private.CoreLib",
+        "$values": [
+          "-.-",
+          "_._",
+          "\\./"
+        ]
+      },
+      "Size": {
+        "$type": "SadRogue.Primitives.Point, TheSadRogue.Primitives",
+        "X": 3,
+        "Y": 1
+      }
+    }
+  ]
+}

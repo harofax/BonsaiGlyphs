@@ -1,11 +1,15 @@
 ﻿using BonsaiGlyphs.Code.Debug;
 using BonsaiGlyphs.Code.Game;
+using BonsaiGlyphs.Code.Managers;
 using SadConsole.Configuration;
 
 namespace BonsaiGlyphs;
 
 internal static class GameLoop
 {
+
+    public static TickManager TickManager = new TickManager(TimeSpan.FromSeconds(GameSettings.TICK_RATE));
+    
     public static void Main(string[] args)
     {
         Settings.WindowTitle = "Bonsai Glyphs";
@@ -25,6 +29,10 @@ internal static class GameLoop
         DebugWindow debug = new DebugWindow(60, GameSettings.WORLD_HEIGHT);
 
         var mainScreen = new Container();
+        
+        TickManager.StartTick();
+        
+        mainScreen.Children.Add(TickManager);
 
         mainScreen.Children.Add(debug);
 

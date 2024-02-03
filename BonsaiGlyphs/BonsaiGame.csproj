@@ -22,7 +22,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Assets\bonsaipots.xp">
+      <Folder Include="Code\World\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Assets\REX\bonsaipots.xp">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Assets\JSON\entities.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
