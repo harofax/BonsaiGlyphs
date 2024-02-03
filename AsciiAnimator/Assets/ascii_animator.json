@@ -1,0 +1,550 @@
+{
+  "$type": "SadConsole.UI.Colors, SadConsole",
+  "IsLightTheme": false,
+  "Name": "ansi",
+  "White": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 255,
+    "G": 255,
+    "B": 255,
+    "A": 255
+  },
+  "Black": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 0,
+    "G": 0,
+    "B": 0,
+    "A": 255
+  },
+  "Gray": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 170,
+    "G": 170,
+    "B": 170,
+    "A": 255
+  },
+  "GrayDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 85,
+    "G": 85,
+    "B": 85,
+    "A": 255
+  },
+  "Red": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 255,
+    "G": 85,
+    "B": 85,
+    "A": 255
+  },
+  "Green": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 85,
+    "G": 255,
+    "B": 85,
+    "A": 255
+  },
+  "Blue": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 85,
+    "G": 85,
+    "B": 255,
+    "A": 255
+  },
+  "Purple": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 255,
+    "G": 85,
+    "B": 255,
+    "A": 255
+  },
+  "Yellow": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 255,
+    "G": 245,
+    "B": 91,
+    "A": 255
+  },
+  "Orange": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 255,
+    "G": 165,
+    "B": 0,
+    "A": 255
+  },
+  "Cyan": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 85,
+    "G": 255,
+    "B": 255,
+    "A": 255
+  },
+  "Brown": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 170,
+    "G": 85,
+    "B": 0,
+    "A": 255
+  },
+  "RedDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 170,
+    "G": 0,
+    "B": 0,
+    "A": 255
+  },
+  "GreenDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 0,
+    "G": 170,
+    "B": 0,
+    "A": 255
+  },
+  "BlueDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 34,
+    "G": 34,
+    "B": 77,
+    "A": 255
+  },
+  "PurpleDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 170,
+    "G": 0,
+    "B": 170,
+    "A": 255
+  },
+  "YellowDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 127,
+    "G": 127,
+    "B": 42,
+    "A": 255
+  },
+  "OrangeDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 255,
+    "G": 140,
+    "B": 0,
+    "A": 255
+  },
+  "CyanDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 0,
+    "G": 170,
+    "B": 170,
+    "A": 255
+  },
+  "BrownDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 85,
+    "G": 42,
+    "B": 0,
+    "A": 255
+  },
+  "Gold": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 255,
+    "G": 161,
+    "B": 0,
+    "A": 255
+  },
+  "GoldDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 184,
+    "G": 134,
+    "B": 11,
+    "A": 255
+  },
+  "Silver": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 192,
+    "G": 192,
+    "B": 192,
+    "A": 255
+  },
+  "SilverDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 96,
+    "G": 96,
+    "B": 96,
+    "A": 255
+  },
+  "Bronze": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 205,
+    "G": 127,
+    "B": 50,
+    "A": 255
+  },
+  "BronzeDark": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 102,
+    "G": 63,
+    "B": 25,
+    "A": 255
+  },
+  "ModalBackground": {
+    "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+    "R": 20,
+    "G": 20,
+    "B": 20,
+    "A": 200
+  },
+  "Title": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Title",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 245,
+      "B": 91,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 14,
+    "Brightness": 1
+  },
+  "Lines": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Lines",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 245,
+      "B": 91,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 14,
+    "Brightness": 2
+  },
+  "ControlForegroundNormal": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Foreground Normal",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 170,
+      "G": 170,
+      "B": 170,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 2,
+    "Brightness": 0
+  },
+  "ControlForegroundDisabled": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Foreground Disabled",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 85,
+      "G": 85,
+      "B": 85,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 3,
+    "Brightness": 2
+  },
+  "ControlForegroundMouseOver": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Foreground MouseOver",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 245,
+      "B": 91,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 14,
+    "Brightness": 0
+  },
+  "ControlForegroundMouseDown": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Foreground MouseDown",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 161,
+      "B": 0,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 20,
+    "Brightness": 1
+  },
+  "ControlForegroundSelected": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Foreground Selected",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 245,
+      "B": 91,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 14,
+    "Brightness": 2
+  },
+  "ControlForegroundFocused": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Foreground Focused",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 245,
+      "B": 91,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 14,
+    "Brightness": 2
+  },
+  "ControlBackgroundNormal": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Background Normal",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 34,
+      "G": 34,
+      "B": 77,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 11,
+    "Brightness": 1
+  },
+  "ControlBackgroundDisabled": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Background Disabled",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 1,
+    "Brightness": 2
+  },
+  "ControlBackgroundMouseOver": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Background MouseOver",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 34,
+      "G": 34,
+      "B": 77,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 11,
+    "Brightness": 2
+  },
+  "ControlBackgroundMouseDown": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Background MouseDown",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 34,
+      "G": 34,
+      "B": 77,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 11,
+    "Brightness": 3
+  },
+  "ControlBackgroundSelected": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Background Selected",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 1,
+    "Brightness": 2
+  },
+  "ControlBackgroundFocused": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Background Focused",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 85,
+      "G": 85,
+      "B": 255,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 10,
+    "Brightness": 4
+  },
+  "ControlHostForeground": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Host Foreground",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 0,
+    "Brightness": 2
+  },
+  "ControlHostBackground": {
+    "$type": "SadConsole.UI.AdjustableColor, SadConsole",
+    "Name": "Control Host Background",
+    "BaseColor": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 34,
+      "G": 34,
+      "B": 77,
+      "A": 255
+    },
+    "IsCustomColor": false,
+    "UIColor": 11,
+    "Brightness": 3
+  },
+  "Appearance_ControlNormal": {
+    "$type": "SadConsole.ColoredGlyph, SadConsole",
+    "Decorators": null,
+    "Foreground": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 255,
+      "B": 255,
+      "A": 255
+    },
+    "Background": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 42,
+      "G": 42,
+      "B": 96,
+      "A": 255
+    },
+    "Glyph": 0,
+    "Mirror": 0,
+    "IsVisible": true,
+    "IsDirty": true
+  },
+  "Appearance_ControlDisabled": {
+    "$type": "SadConsole.ColoredGlyph, SadConsole",
+    "Decorators": null,
+    "Foreground": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 85,
+      "G": 85,
+      "B": 85,
+      "A": 255
+    },
+    "Background": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 255
+    },
+    "Glyph": 0,
+    "Mirror": 0,
+    "IsVisible": true,
+    "IsDirty": true
+  },
+  "Appearance_ControlOver": {
+    "$type": "SadConsole.ColoredGlyph, SadConsole",
+    "Decorators": null,
+    "Foreground": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 255,
+      "B": 159,
+      "A": 255
+    },
+    "Background": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 34,
+      "G": 34,
+      "B": 77,
+      "A": 255
+    },
+    "Glyph": 0,
+    "Mirror": 0,
+    "IsVisible": true,
+    "IsDirty": true
+  },
+  "Appearance_ControlSelected": {
+    "$type": "SadConsole.ColoredGlyph, SadConsole",
+    "Decorators": null,
+    "Foreground": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 245,
+      "B": 91,
+      "A": 255
+    },
+    "Background": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 0,
+      "G": 0,
+      "B": 0,
+      "A": 255
+    },
+    "Glyph": 0,
+    "Mirror": 0,
+    "IsVisible": true,
+    "IsDirty": true
+  },
+  "Appearance_ControlMouseDown": {
+    "$type": "SadConsole.ColoredGlyph, SadConsole",
+    "Decorators": null,
+    "Foreground": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 201,
+      "B": 0,
+      "A": 255
+    },
+    "Background": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 25,
+      "G": 25,
+      "B": 57,
+      "A": 255
+    },
+    "Glyph": 0,
+    "Mirror": 0,
+    "IsVisible": true,
+    "IsDirty": true
+  },
+  "Appearance_ControlFocused": {
+    "$type": "SadConsole.ColoredGlyph, SadConsole",
+    "Decorators": null,
+    "Foreground": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 255,
+      "G": 245,
+      "B": 91,
+      "A": 255
+    },
+    "Background": {
+      "$type": "SadConsole.SerializedTypes.ColorSerialized, SadConsole",
+      "R": 21,
+      "G": 21,
+      "B": 63,
+      "A": 255
+    },
+    "Glyph": 0,
+    "Mirror": 0,
+    "IsVisible": true,
+    "IsDirty": true
+  }
+}

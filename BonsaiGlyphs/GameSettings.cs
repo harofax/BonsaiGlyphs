@@ -1,4 +1,8 @@
-﻿static class GameSettings
+﻿
+
+namespace BonsaiGlyphs;
+
+static class GameSettings
 {
     public static int DEBUG_LOG_HISTORY = 1000;
     public static double TICK_RATE = 1.0;

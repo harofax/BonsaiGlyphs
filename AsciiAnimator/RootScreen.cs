@@ -10,7 +10,7 @@ class RootScreen : ScreenObject
     public RootScreen()
     {
         // Create a surface that's the same size as the screen.
-        _mainSurface = new ScreenSurface(GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
+        _mainSurface = new ScreenSurface(ProgramSettings.GAME_WIDTH, ProgramSettings.GAME_HEIGHT);
 
         _mainSurface.Fill(new Color(0.1f, 0, 0.2f));
         
