@@ -11,15 +11,15 @@ public class MainMenu : ControlsConsole
     private ButtonBox loadButton;
     private ButtonBox exitButton;
     private int buttonPadding = 4;
-    private NewAnimationDialogue newAnimationPopup = new NewAnimationDialogue(20, 10);
+    private NewAnimationDialogue newAnimationPopup = new NewAnimationDialogue(50, 30);
 
     public MainMenu(int width, int height) : base(width, height)
     {
         //var colorSchemeFile = File.ReadAllText(ProgramSettings.THEME_JSON_PATH);
 
 
-        var colorScheme = Serializer.Load<Colors>(ProgramSettings.THEME_JSON_PATH, false);
-        Controls.ThemeColors = colorScheme;
+        //var colorScheme = Serializer.Load<Colors>(ProgramSettings.THEME_JSON_PATH, false);
+        Controls.ThemeColors = ProgramSettings.THEME;
 
         createNewButton =
             new ButtonBox(ProgramSettings.MAIN_MENU_BUTTON_WIDTH, ProgramSettings.MAIN_MENU_BUTTON_HEIGHT)
@@ -90,7 +90,7 @@ public class MainMenu : ControlsConsole
         Surface.PrintTheDraw((Surface.Width - titleWidth) / 2,titleHeight, "ASCII", tdf);
         
         titleWidth = 0;
-        titleHeight += tdf.GetCharacter('A').Rows.Length;
+        titleHeight += tdf.GetCharacter('A').Rows.Length; // shift down a row
         
         foreach (char ch in "Animator")
         {
@@ -100,7 +100,9 @@ public class MainMenu : ControlsConsole
         Surface.PrintTheDraw((Surface.Width - titleWidth) / 2,titleHeight, "Animator", tdf);
         
         
+        // fill background to eliminate the black bg for the title
         Surface.Fill(null, colors.ControlHostBackground, null);
+        
     }
 
     private void ExitButtonClicked(object? sender, ControlBase.ControlMouseState e)

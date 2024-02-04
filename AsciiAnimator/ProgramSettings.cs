@@ -14,4 +14,6 @@ static class ProgramSettings
     public const string THEME_JSON_PATH = "Assets/ascii_animator.json";
 
     public const string TD_FONT_PATH = "Assets/BASIC.TDF";
+
+    public static Colors THEME = Serializer.Load<Colors>(THEME_JSON_PATH, false);
 }
