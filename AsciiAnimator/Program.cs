@@ -1,5 +1,4 @@
-﻿using AsciiAnimator.Code.Util;
-using AsciiAnimator.Scenes.Code.Screens;
+﻿using AsciiAnimator.Scenes.Code.Screens;
 using SadConsole.Configuration;
 
 namespace AsciiAnimator;
@@ -27,9 +26,6 @@ internal static class Program
 
         Game.Instance.Screen = menu;
         Game.Instance.Screen.IsFocused = true;
-        
-        SadConsole.Serializer.Settings.Converters.Add(new PackedColorConverter());
-        
         Game.Instance.DestroyDefaultStartingConsole();
 
         Settings.ResizeMode = Settings.WindowResizeOptions.Fit;

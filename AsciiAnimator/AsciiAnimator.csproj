@@ -25,6 +25,13 @@
       <None Update="Assets\ascii_animator.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Assets\BASIC.TDF">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Code\Util\" />
     </ItemGroup>
 
 </Project>

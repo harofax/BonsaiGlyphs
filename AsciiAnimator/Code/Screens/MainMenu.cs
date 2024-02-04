@@ -1,6 +1,5 @@
-﻿using System.Text.Json;
-using AsciiAnimator.Code.Util;
-using Newtonsoft.Json;
+﻿using AsciiAnimator.Code.Windows;
+using SadConsole.Readers;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
 
@@ -8,54 +7,104 @@ namespace AsciiAnimator.Scenes.Code.Screens;
 
 public class MainMenu : ControlsConsole
 {
-    private ButtonLine createNewButton;
+    private ButtonBox createNewButton;
+    private ButtonBox loadButton;
+    private ButtonBox exitButton;
+    private int buttonPadding = 4;
+    private NewAnimationDialogue newAnimationPopup = new NewAnimationDialogue(20, 10);
 
     public MainMenu(int width, int height) : base(width, height)
     {
         //var colorSchemeFile = File.ReadAllText(ProgramSettings.THEME_JSON_PATH);
-        
-        
-        var colorScheme = SadConsole.Serializer.Load<Colors>(ProgramSettings.THEME_JSON_PATH, false);
 
+
+        var colorScheme = Serializer.Load<Colors>(ProgramSettings.THEME_JSON_PATH, false);
         Controls.ThemeColors = colorScheme;
 
-        
-        createNewButton = new ButtonLine(ProgramSettings.MAIN_MENU_BUTTON_WIDTH, ProgramSettings.MAIN_MENU_BUTTON_HEIGHT)
+        createNewButton =
+            new ButtonBox(ProgramSettings.MAIN_MENU_BUTTON_WIDTH, ProgramSettings.MAIN_MENU_BUTTON_HEIGHT)
             {
                 TextAlignment = HorizontalAlignment.Stretch,
                 Text = "New",
+                CanFocus = false,
                 UseExtended = true
             };
-        //createNewButton.AutoSize = true;
+        
+        createNewButton.MouseButtonClicked += CreateNewAnimationButtonClicked;
 
-        createNewButton.Position = createNewButton.Surface.Area.WithCenter(Surface.Area.Center).Position.WithY((Height/4) * 2);
+        createNewButton.Position = createNewButton.Surface.Area.WithCenter(Surface.Area.Center).Position
+            .WithY((Height / 7) * 4);
         Controls.Add(createNewButton);
 
-        Button loadButton = new Button(ProgramSettings.MAIN_MENU_BUTTON_WIDTH, ProgramSettings.MAIN_MENU_BUTTON_HEIGHT);
-        loadButton.Text = "Load";
-        loadButton.TextAlignment = HorizontalAlignment.Stretch;
+        loadButton = new ButtonBox(ProgramSettings.MAIN_MENU_BUTTON_WIDTH, ProgramSettings.MAIN_MENU_BUTTON_HEIGHT)
+        {
+            TextAlignment = HorizontalAlignment.Stretch,
+            Text = "Load",
+            CanFocus = false,
+            UseExtended = true
+        };
         //loadButton.AutoSize = true;
-        loadButton.PlaceRelativeTo(createNewButton, Direction.Down);
-        
-        
-        Button exitButton = new Button(ProgramSettings.MAIN_MENU_BUTTON_WIDTH, ProgramSettings.MAIN_MENU_BUTTON_HEIGHT);
-        exitButton.Text = "EXIT";
-        exitButton.TextAlignment = HorizontalAlignment.Center;
+        loadButton.PlaceRelativeTo(createNewButton, Direction.Down, buttonPadding);
+
+
+        exitButton = new ButtonBox(ProgramSettings.MAIN_MENU_BUTTON_WIDTH, ProgramSettings.MAIN_MENU_BUTTON_HEIGHT)
+        {
+            TextAlignment = HorizontalAlignment.Stretch,
+            Text = "Exit",
+            UseExtended = true,
+            CanFocus = false
+        };
         //exitButton.AutoSize = true;
-        exitButton.PlaceRelativeTo(loadButton, Direction.Types.Down);
-        Surface.Fill(null ,new Color(0.1f, 0, 0.1f));
-       
+        exitButton.PlaceRelativeTo(loadButton, Direction.Types.Down, buttonPadding);
+        exitButton.MouseButtonClicked += ExitButtonClicked;
+
+        newAnimationPopup.Position = newAnimationPopup.Surface.Area.WithCenter(Surface.Area.Center).Position;
+        Children.Add(newAnimationPopup);
+        
+        PrintTitle();
     }
 
-    public MainMenu(int viewWidth, int viewHeight, int totalWidth, int totalHeight) : base(viewWidth, viewHeight,
-        totalWidth, totalHeight)
+    private void CreateNewAnimationButtonClicked(object? sender, ControlBase.ControlMouseState e)
     {
+        newAnimationPopup.Show();
     }
 
-    public override void Render(TimeSpan delta)
+    private void PrintTitle()
     {
-        base.Render(delta);
-        //createNewButton.Surface.DrawBox(createNewButton.Surface.Area, ShapeParameters.CreateStyledBoxThin(Color.Gold));
+        IsDirty = true;
 
+        var colors = Controls.GetThemeColors();
+
+        var tdf = TheDrawFont.ReadFonts(ProgramSettings.TD_FONT_PATH).ToArray()[0];
+
+        tdf.Type = TheDrawFont.FontType.Outline;
+
+        int titleWidth = 0;
+        int titleHeight = 5;
+        
+        foreach (char ch in "ASCII")
+        {
+            titleWidth += tdf.GetCharacter(ch).Width;
+        }
+        
+        Surface.PrintTheDraw((Surface.Width - titleWidth) / 2,titleHeight, "ASCII", tdf);
+        
+        titleWidth = 0;
+        titleHeight += tdf.GetCharacter('A').Rows.Length;
+        
+        foreach (char ch in "Animator")
+        {
+            titleWidth += tdf.GetCharacter(ch).Width;
+        }
+        
+        Surface.PrintTheDraw((Surface.Width - titleWidth) / 2,titleHeight, "Animator", tdf);
+        
+        
+        Surface.Fill(null, colors.ControlHostBackground, null);
+    }
+
+    private void ExitButtonClicked(object? sender, ControlBase.ControlMouseState e)
+    {
+        Game.Instance.MonoGameInstance.Exit();
     }
 }
