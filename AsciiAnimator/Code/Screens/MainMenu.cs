@@ -11,7 +11,7 @@ public class MainMenu : ControlsConsole
     private ButtonBox loadButton;
     private ButtonBox exitButton;
     private int buttonPadding = 4;
-    private NewAnimationDialogue newAnimationPopup = new NewAnimationDialogue(50, 30);
+    private NewAnimationDialogue newAnimationPopup = new NewAnimationDialogue(50, 10);
 
     public MainMenu(int width, int height) : base(width, height)
     {
