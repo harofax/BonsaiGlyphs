@@ -5,8 +5,8 @@ namespace AsciiAnimator;
 
 static class ProgramSettings
 {
-    public const int GAME_WIDTH = 160;
-    public const int GAME_HEIGHT = 50;
+    public const int GAME_WIDTH = 100;
+    public const int GAME_HEIGHT = 40;
 
     public const int MAIN_MENU_BUTTON_WIDTH = 19;
     public const int MAIN_MENU_BUTTON_HEIGHT = 3;

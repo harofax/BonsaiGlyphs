@@ -12,15 +12,15 @@ public class AnimationScreen : ControlsConsole
     private TitleBarHandler titleBarHandler;
     public AnimationScreen(int width, int height) : base(ProgramSettings.GAME_WIDTH, ProgramSettings.GAME_HEIGHT)
     {
-        titleBarHandler = new TitleBarHandler(Width, 2);
+        titleBarHandler = new TitleBarHandler(Width, 3);
         titleBarHandler.Position = (0, 0);
         
         
         Controls.ThemeColors = ProgramSettings.THEME;
         //Surface.Fill(null, Controls.ThemeColors.ControlHostBackground);
 
-        Surface.DrawBox(Surface.Area, ShapeParameters.CreateStyledBoxThin(Controls.ThemeColors.Lines));
-        Surface.Print(Width/2, 0, "[ ASCII ANIMATOR ]");
+        DrawBorder();
+        Surface.Print(Width/2, titleBarHandler.Height, "[ ASCII ANIMATOR ]");
         
         Button button = new Button("TEST")
         {
@@ -38,7 +38,7 @@ public class AnimationScreen : ControlsConsole
         drawArea = new ScreenSurface(width, height);
         drawArea.Position = drawArea.Surface.Area.WithCenter((Game.Instance.ScreenCellsX / 2, Game.Instance.ScreenCellsY/2)).Position;
         
-        
+        TitleBarHandler.OnWindowChanged += OnWindowChanged;
         
         drawArea.FillWithRandomGarbage(drawArea.Font);
         Children.Add(drawArea);
@@ -46,6 +46,22 @@ public class AnimationScreen : ControlsConsole
         IsFocused = true;
 
         Children.Add(titleBarHandler);
+    }
+
+    private void OnWindowChanged(int width, int height)
+    {
+        Resize(width / FontSize.X, height / FontSize.Y, true);
+        DrawBorder();
+        Surface.Print(Width/2, 0, "[ ASCII ANIMATOR ]");
+        drawArea.Position =  drawArea.Surface.Area.WithCenter((Game.Instance.ScreenCellsX / 2, Game.Instance.ScreenCellsY/2)).Position;
+    }
+
+    private void DrawBorder()
+    { 
+        Surface.DrawBox(
+            Surface.Area.WithHeight(Height-titleBarHandler.Height).WithY(titleBarHandler.Height), 
+            ShapeParameters.CreateStyledBoxThick(Controls.ThemeColors.Lines));
+
     }
 
     public override bool ProcessKeyboard(Keyboard keyboard)
