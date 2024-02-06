@@ -4,32 +4,28 @@ namespace AsciiAnimator.Code.Util;
 
 public class IntegerTextField : TextBox
 {
-    public IntegerTextField(int width) : base(width)
+    private readonly int _numberMin = 1;
+
+    public IntegerTextField(int width, int defaultValue) : base(width)
     {
-        _text = "1";
+        Text = defaultValue.ToString();
     }
+
+
+    public int NumberMax { get; set; } = int.MaxValue;
 
     protected override void OnUnfocused()
     {
         ValidateNumber();
         base.OnUnfocused();
     }
-    
-
-    public uint NumberMax { get; set; } = UInt32.MaxValue;
-    private uint _numberMin = 1;
-    private bool UseMaxValue => NumberMax < uint.MaxValue;
 
     private void ValidateNumber()
     {
-        if (uint.TryParse(_text, out uint num))
-        {
+        if (int.TryParse(_text, out var num))
             num = Math.Clamp(num, _numberMin, NumberMax);
-        }
         else
-        {
             num = _numberMin;
-        }
 
         Text = num.ToString();
 

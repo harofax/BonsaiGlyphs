@@ -12,8 +12,11 @@ public class NewAnimationDialogue : Window
     private IntegerTextField heightInputField;
     private IntegerTextField widthInputField;
 
-    public NewAnimationDialogue(int width, int height) : base(width, height)
+    private MainMenu menu;
+    
+    public NewAnimationDialogue(int width, int height, MainMenu menu) : base(width, height)
     {
+        this.menu = menu;
         var theme = ProgramSettings.THEME;
         this.Controls.ThemeColors = theme;
         this.BorderLineStyle = ICellSurface.ConnectedLineThick;
@@ -24,10 +27,13 @@ public class NewAnimationDialogue : Window
         Surface.Fill(Color.Transparent, theme.ControlHostBackground);
 
         Label widthLabel = new Label("Width");
-        widthInputField = new IntegerTextField(6);
+        widthLabel.TabStop = false;
+        widthInputField = new IntegerTextField(6, 32);
+        
         
         Label heightLabel = new Label("Height");
-        heightInputField = new IntegerTextField(6);
+        heightLabel.TabStop = false;
+        heightInputField = new IntegerTextField(6, 16);
 
         widthLabel.Position = (3, 3);
         Controls.Add(widthLabel);
@@ -42,6 +48,7 @@ public class NewAnimationDialogue : Window
         createButton.Position = createButton.Surface.Area.WithCenter(Surface.Area.Center).WithY(Height - 5).Position;
         
         createButton.MouseButtonClicked += CreateNewAnimation;
+        createButton.TabStop = false;
         
         Controls.Add(createButton);
         
@@ -60,9 +67,18 @@ public class NewAnimationDialogue : Window
 
     private void CreateNewAnimation(object? sender, ControlBase.ControlMouseState e)
     {
-        uint width = uint.Parse(widthInputField.Text);
-        uint height = uint.Parse(heightInputField.Text);
-        Game.Instance.Screen = new AnimationScreen(width, height);
+        int width = int.Parse(widthInputField.Text);
+        int height = int.Parse(heightInputField.Text);
+
+        //menu.IsFocused = false;
+        //menu.Dispose();
+        //menu = null;
+        
+        var animationScreen = new AnimationScreen(width, height);
+        Game.Instance.Screen = animationScreen;
+        Game.Instance.Screen.IsFocused = true;
+        
+        Hide();
     }
 
     protected override void OnShown()

@@ -22,12 +22,13 @@ internal static class Program
 
     private static void Init(object? sender, GameHost e)
     {
-        MainMenu menu = new MainMenu(ProgramSettings.GAME_WIDTH, ProgramSettings.GAME_HEIGHT);
+        var startScreen = new AnimationScreen(32, 16);
 
-        Game.Instance.Screen = menu;
+        Game.Instance.Screen = startScreen;
         Game.Instance.Screen.IsFocused = true;
         Game.Instance.DestroyDefaultStartingConsole();
 
+        Game.Instance.MonoGameInstance.Window.IsBorderless = true;
         Settings.ResizeMode = Settings.WindowResizeOptions.Fit;
     }
 }

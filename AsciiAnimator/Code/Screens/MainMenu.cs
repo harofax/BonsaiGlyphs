@@ -1,4 +1,5 @@
 ﻿using AsciiAnimator.Code.Windows;
+using SadConsole.Input;
 using SadConsole.Readers;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
@@ -11,10 +12,11 @@ public class MainMenu : ControlsConsole
     private ButtonBox loadButton;
     private ButtonBox exitButton;
     private int buttonPadding = 4;
-    private NewAnimationDialogue newAnimationPopup = new NewAnimationDialogue(50, 10);
+    private NewAnimationDialogue newAnimationPopup;
 
     public MainMenu(int width, int height) : base(width, height)
     {
+        newAnimationPopup  = new NewAnimationDialogue(50, 10, this);
         //var colorSchemeFile = File.ReadAllText(ProgramSettings.THEME_JSON_PATH);
 
 
@@ -58,8 +60,7 @@ public class MainMenu : ControlsConsole
         exitButton.PlaceRelativeTo(loadButton, Direction.Types.Down, buttonPadding);
         exitButton.MouseButtonClicked += ExitButtonClicked;
 
-        newAnimationPopup.Position = newAnimationPopup.Surface.Area.WithCenter(Surface.Area.Center).Position;
-        Children.Add(newAnimationPopup);
+        newAnimationPopup.Center();
         
         PrintTitle();
     }
