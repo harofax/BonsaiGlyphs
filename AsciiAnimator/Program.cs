@@ -10,7 +10,7 @@ internal static class Program
         Settings.WindowTitle = "ASCII ANIMATOR MK.1000";
 
         Builder gameStartup = new Builder()
-                .SetScreenSize(ProgramSettings.GAME_WIDTH, ProgramSettings.GAME_HEIGHT)
+                .SetScreenSize(ProgramSettings.PROGRAM_WIDTH, ProgramSettings.PROGRAM_HEIGHT)
                 .ConfigureFonts(true)
                 .OnStart(Init)
             ;

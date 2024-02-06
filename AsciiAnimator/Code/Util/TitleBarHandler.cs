@@ -60,8 +60,12 @@ public class TitleBarHandler : ControlsConsole
 
     private void DrawTitleBar()
     {
-        Surface.Fill(Color.Transparent, ProgramSettings.THEME.ControlHostBackground);
-        Surface.Print(2, 1, "ASCII ANIMATOR", ProgramSettings.THEME.Lines);
+        var theme = ProgramSettings.THEME;
+        
+        Surface.Fill(Color.Transparent, theme.ControlBackgroundNormal);
+        Surface.DrawBox(Surface.Area, ShapeParameters.CreateStyledBox(ICellSurface.ConnectedLineThinExtended,
+            new ColoredGlyph(theme.Lines, theme.ControlBackgroundNormal)));
+        Surface.Print(2, 1, "ASCII ANIMATOR", theme.Lines);
     }
 
     [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -88,7 +92,7 @@ public class TitleBarHandler : ControlsConsole
         else
         {
             Game.Instance.MonoGameInstance.ResizeGraphicsDeviceManager(FontSize.ToMonoPoint(),
-                ProgramSettings.GAME_WIDTH, ProgramSettings.GAME_HEIGHT, 0, 0);
+                ProgramSettings.PROGRAM_WIDTH, ProgramSettings.PROGRAM_HEIGHT, 0, 0);
             _maximized = false;
         }
 

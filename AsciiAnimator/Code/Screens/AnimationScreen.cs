@@ -1,66 +1,177 @@
 ﻿using AsciiAnimator.Code.Util;
 using SadConsole.Input;
+using SadConsole.SplashScreens;
 using SadConsole.UI;
 using SadConsole.UI.Controls;
+using SadConsole.UI.Windows;
 
 namespace AsciiAnimator.Scenes.Code.Screens;
 
 public class AnimationScreen : ControlsConsole
 {
-
-    private ScreenSurface drawArea;
+    private List<ICellSurface> frames = new List<ICellSurface>(3);
+    
+    //private ScreenSurface drawArea;
     private TitleBarHandler titleBarHandler;
-    public AnimationScreen(int width, int height) : base(ProgramSettings.GAME_WIDTH, ProgramSettings.GAME_HEIGHT)
+
+    private ColorPickerPopup colorPickerPopup = new ColorPickerPopup();
+    private int currentFrameIndex = 0;
+
+    private SurfaceViewer viewer;
+
+    public AnimationScreen(int width, int height) : base(ProgramSettings.PROGRAM_WIDTH, ProgramSettings.PROGRAM_HEIGHT)
     {
-        titleBarHandler = new TitleBarHandler(Width, 3);
+        for (int i = 0; i < 3; i++)
+        {
+            var cellSurface = new CellSurface(width, height);
+            cellSurface.FillWithRandomGarbage(Font);
+            frames.Add(cellSurface);
+        }
+        
+        
+        titleBarHandler = new TitleBarHandler(Width, ProgramSettings.TITLEBAR_HEIGHT);
         titleBarHandler.Position = (0, 0);
         
-        
         Controls.ThemeColors = ProgramSettings.THEME;
-        //Surface.Fill(null, Controls.ThemeColors.ControlHostBackground);
 
-        DrawBorder();
-        Surface.Print(Width/2, titleBarHandler.Height, "[ ASCII ANIMATOR ]");
+        CharacterPicker characterPicker = new CharacterPicker(Color.Yellow, ProgramSettings.THEME.Black, Color.Blue,
+            Game.Instance.EmbeddedFont, 16, 16);
         
-        Button button = new Button("TEST")
+        Controls.Add(characterPicker);
+
+        characterPicker.Position = (1, titleBarHandler.Height + 1);
+        
+        DrawAnimationScreen();
+
+        var colorGradient = new ColorPicker(16, 8, colorPickerPopup.SelectedColor);
+        colorGradient.PlaceRelativeTo(characterPicker, Direction.Types.Down);
+        //colorGradient.Position = (1, colorPickerButton.Position.Y + colorPickerButton.Height);
+
+        colorPickerPopup.Closed += (sender, args) =>
         {
-            Position = (5,5),
+            if (colorPickerPopup.DialogResult)
+            {
+                colorGradient.MasterColor = colorPickerPopup.SelectedColor;
+            }
         };
-        Button button2 = new Button("TEST")
-        {
-            Position = (16,30),
-        };
         
-        Controls.Add(button);
+        //Controls.Add(colorGradient);
         
-        Controls.Add(button2);
+        Button colorPickerButton = new Button("COLOUR");
+        colorPickerButton.PlaceRelativeTo(colorGradient, Direction.Types.DownLeft, 1);
+
+        colorPickerButton.Position = characterPicker.Surface.Area.Center.WithY(colorPickerButton.Position.Y).Translate(-colorPickerButton.Text.Length, 0);
         
-        drawArea = new ScreenSurface(width, height);
-        drawArea.Position = drawArea.Surface.Area.WithCenter((Game.Instance.ScreenCellsX / 2, Game.Instance.ScreenCellsY/2)).Position;
+        colorPickerButton.MouseButtonClicked += (sender, state) => colorPickerPopup.Show(true);
+        
+        colorGradient.SelectedColorChanged +=
+            (sender, args) => colorPickerPopup.SelectedColor = colorGradient.SelectedColor;
+        
+        //Controls.Add(colorPickerButton);
+        
+        //DEBUG_DRAW_UI();
+        
+        //drawArea = new ScreenSurface(width, height);
+        //drawArea.Position = drawArea.Surface.Area.WithCenter((Game.Instance.ScreenCellsX / 2, Game.Instance.ScreenCellsY/2)).Position;
+        
+        //frames.Add(drawArea.Surface);
+        System.Console.Out.WriteLine("num frames " + frames.Count);
+
+        viewer = new SurfaceViewer(ProgramSettings.CANVAS_WIDTH, ProgramSettings.CANVAS_HEIGHT, frames[0].Surface);
+        viewer.Position = viewer.Surface.Area.WithCenter(Surface.Area.Center).Position;
+        viewer.MouseMove += CanvasMouseMove;
+        
+        
+        Controls.Add(viewer);
         
         TitleBarHandler.OnWindowChanged += OnWindowChanged;
         
-        drawArea.FillWithRandomGarbage(drawArea.Font);
-        Children.Add(drawArea);
+        //drawArea.FillWithRandomGarbage(drawArea.Font);
+        //drawArea.UseMouse = true;
+        
+        //Children.Add(drawArea);
         UseKeyboard = true;
+        UseMouse = true;
         IsFocused = true;
 
         Children.Add(titleBarHandler);
     }
 
+    private void DEBUG_DRAW_UI()
+    {
+        ScreenSurface toolbar = new ScreenSurface(ProgramSettings.TOOLBAR_WIDTH, ProgramSettings.TOOLBAR_HEIGHT);
+        toolbar.Fill(null, Color.Red);
+        toolbar.Position = (Width - toolbar.Width, titleBarHandler.Height);
+        
+        ScreenSurface ascii_color_picker = new ScreenSurface(ProgramSettings.ASCII_COLOR_PICKER_WIDTH, Height-titleBarHandler.Height);
+        ascii_color_picker.Fill(null, Color.Yellow);
+        ascii_color_picker.Position = (0, titleBarHandler.Height);
+        
+        ScreenSurface timeline = new ScreenSurface(ProgramSettings.TIMELINE_WIDTH, ProgramSettings.TIMELINE_HEIGHT);
+        timeline.Fill(null, Color.Green);
+        timeline.Position = (ascii_color_picker.Width, Height - timeline.Height);
+        
+        Children.Add(toolbar);
+        Children.Add(ascii_color_picker);
+        Children.Add(timeline);
+    }
+
+    private void CanvasMouseMove(object? sender, ControlBase.ControlMouseState e)
+    {
+        if (e.OriginalMouseState.Mouse.LeftClicked)
+        {
+            var viewer = (SurfaceViewer) sender;
+            if (viewer.IsMouseButtonStateClean && viewer.MouseArea.Contains(e.MousePosition))
+            {
+                System.Console.Out.WriteLine(viewer.Surface.GetBackground(e.MousePosition.X + viewer.Surface.ViewPosition.X, e.MousePosition.Y + viewer.Surface.ViewPosition.Y));
+            }
+        }
+    }
+
+    private void NextFrame()
+    {
+        currentFrameIndex++;
+
+        if (currentFrameIndex >= frames.Count)
+        {
+            currentFrameIndex = 0;
+        }
+        System.Console.Out.WriteLine("current frame index: " + currentFrameIndex);
+
+        viewer.Surface = frames[currentFrameIndex];
+        viewer.IsDirty = true;
+    }
+
+    private void PreviousFrame()
+    {
+        currentFrameIndex--;
+
+        if (currentFrameIndex < 0)
+        {
+            currentFrameIndex = frames.Count - 1;
+        }
+        System.Console.Out.WriteLine("current frame index: " + currentFrameIndex);
+
+        viewer.Surface = frames[currentFrameIndex];
+        viewer.IsDirty = true;
+    }
+
+
     private void OnWindowChanged(int width, int height)
     {
         Resize(width / FontSize.X, height / FontSize.Y, true);
-        DrawBorder();
+        DrawAnimationScreen();
         Surface.Print(Width/2, 0, "[ ASCII ANIMATOR ]");
-        drawArea.Position =  drawArea.Surface.Area.WithCenter((Game.Instance.ScreenCellsX / 2, Game.Instance.ScreenCellsY/2)).Position;
+        viewer.Position =  viewer.Surface.Area.WithCenter((Game.Instance.ScreenCellsX / 2, Game.Instance.ScreenCellsY/2)).Position;
     }
 
-    private void DrawBorder()
+    private void DrawAnimationScreen()
     { 
+        Surface.Fill(Controls.ThemeColors.ControlHostForeground, Controls.ThemeColors.ControlHostBackground);
+
         Surface.DrawBox(
-            Surface.Area.WithHeight(Height-titleBarHandler.Height).WithY(titleBarHandler.Height), 
-            ShapeParameters.CreateStyledBoxThick(Controls.ThemeColors.Lines));
+            Surface.Area.WithHeight(Height-titleBarHandler.Height+1).WithY(titleBarHandler.Height-1), 
+            ShapeParameters.CreateStyledBox(ICellSurface.ConnectedLineThinExtended, new ColoredGlyph(Controls.ThemeColors.Lines, Controls.ThemeColors.ControlHostBackground)));
 
     }
 
@@ -69,6 +180,16 @@ public class AnimationScreen : ControlsConsole
         if (keyboard.IsKeyPressed(Keys.Escape))
         {
             Game.Instance.MonoGameInstance.Exit();
+        }
+
+        if (keyboard.IsKeyPressed(Keys.Left))
+        {
+            PreviousFrame();
+        }
+
+        if (keyboard.IsKeyPressed(Keys.Right))
+        {
+            NextFrame();
         }
 
         return base.ProcessKeyboard(keyboard);
